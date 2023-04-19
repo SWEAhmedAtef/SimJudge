@@ -1,0 +1,97 @@
+﻿@model Test.ViewModels.ProblemViewModel
+@{
+    ViewBag.Title = "Problem";
+}
+
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$$$', '$$$'], ['\\(', '\\)']]
+        }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<h2>@Model.Problem.Name</h2>
+<h4 style="flex-direction: row">Problem Id: @Model.Problem.SourceWebsite.Name-@Model.Problem.SourceProblemId</h4>
+<h4>Contest Name: @Model.Problem.CodeForcesDetails.ContestSource</h4>
+<h4><a href="@Model.Problem.CodeForcesDetails.SourceUrl">Problem Link</a></h4>
+<div style="display: flex;">
+
+    <div class="jumbotron " style="padding: 10px; margin: 20px;width:80%">
+
+        <div style="margin: 15px;">
+            <h2 style="text-align: center">Description</h2>
+            <div class="jumbotron" style="padding: 5px;">
+                @Html.Raw(Model.Problem.ProblemDetails.Description)
+            </div>
+        </div>
+
+        <div style="margin: 15px;">
+            <h2 style="text-align: center">Input</h2>
+            <div class="jumbotron" style="padding: 5px;">
+                @Html.Raw(Model.Problem.ProblemDetails.Input)
+            </div>
+        </div>
+
+        <div style="margin: 15px;">
+            <h2 style="text-align: center">Output</h2>
+            <div class="jumbotron" style="padding: 5px;">
+                @Html.Raw(Model.Problem.ProblemDetails.Output)
+            </div>
+        </div>
+
+        <div style="margin: 15px;">
+            <h2 style="text-align: center">Examples</h2>
+            <div class="jumbotron" style="padding: 5px;">
+                @Html.Raw(Model.Problem.CodeForcesDetails.Examples)
+            </div>
+        </div>
+
+        <div style="margin: 15px;">
+            <h2 style="text-align: center">Notes</h2>
+            <div class="jumbotron" style="padding: 5px;">
+                @Html.Raw(Model.Problem.ProblemDetails.Notes)
+            </div>
+        </div>
+
+    </div>
+
+    <div style="padding: 5px;margin: 20px">
+
+        <div style="margin: 15px;">
+
+            <div class="jumbotron" style="padding: 5px;">
+                <h5 style="text-align: center">Time Limit:</h5>
+                <p style="text-align: center"> @Model.Problem.ProblemDetails.TimeLimit</p>
+            </div>
+
+            <div class="jumbotron" style="padding: 5px;">
+                <h5 style="text-align: center">Memory Limit:</h5>
+                <p style="text-align: center"> @Model.Problem.ProblemDetails.MemoryLimit</p>
+            </div>
+
+            <div class="jumbotron" style="padding: 10px;">
+                <h5 style="text-align: center">Input File:</h5>
+                <p style="text-align: center"> @Model.Problem.CodeForcesDetails.InputFile</p>
+            </div>
+
+            <div class="jumbotron" style="padding: 10px;">
+                <h5 style="text-align: center">Output File:</h5>
+                <p style="text-align: center"> @Model.Problem.CodeForcesDetails.OutputFile</p>
+            </div>
+
+            <div class="jumbotron" style="padding: 10px;">
+                <h5 style="text-align: center">Editorial:</h5>
+                @Html.Raw(Model.Problem.CodeForcesDetails.Editorial)
+            </div>
+
+            <div class="jumbotron" style="padding: 10px;">
+                <h5 style="text-align: center">Problem Tags:</h5>
+                <p style="text-align: center"> @Model.Problem.CodeForcesDetails.Tags</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+@Html.ActionLink("Submit", "Submit", "ContestSubmissions", new { Model.Problem.Id, Model.ContestId }, new { @class = "btn btn-success" })

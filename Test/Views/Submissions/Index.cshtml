@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Test.Models.Submission>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Submissions</h2>
+
+<table id="Submissions" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Sumbission Id</th>
+            <th>User Name</th>
+            <th>Problem Name</th>
+            <th>Result</th>
+            <th>Memory</th>
+            <th>Time</th>
+            <th>Language</th>
+            <th>Submission Date</th>
+            <th>Code</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="9" style="text-align:center">No Submissions Available</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var submission in Model)
+            {
+                var resultclass = submission.Result == "Accepted" ? "ac" : "notac";
+                <tr>
+                    <td>@submission.Id</td>
+                    <td>@submission.ApplicationUser.UserName</td>
+                    <td>@Html.ActionLink(submission.Problem.Name, "ViewProblem", "Problems", new { submission.Problem.Id }, null)</td>
+                    <td class="@resultclass">@submission.Result</td>
+                    <td>@submission.Memory</td>
+                    <td>@submission.Time</td>
+                    <td>@submission.Language.Name</td>
+                    <td>@submission.SubmissionTime</td>
+                    <td>@Html.ActionLink("View Code", "Details", "Submissions", new { submission.Id }, null)</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

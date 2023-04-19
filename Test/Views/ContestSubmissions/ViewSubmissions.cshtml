@@ -1,0 +1,51 @@
+﻿@model Test.ViewModels.ContestSubmissionsViewModel
+@{
+    ViewBag.Title = "ViewSubmissions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Contest Submissions</h2>
+
+<h4>Contest Name: @Model.ContestName</h4>
+
+<table id="Submissions" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Sumbission Id</th>
+            <th>User Name</th>
+            <th>Problem Name</th>
+            <th>Result</th>
+            <th>Memory</th>
+            <th>Time</th>
+            <th>Language</th>
+            <th>Submission Date</th>
+            <th>Code</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.ContestSubmissions.Any())
+        {
+            <tr>
+                <td colspan="9" style="text-align:center">Contest Has No Submissions</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var submission in Model.ContestSubmissions)
+            {
+                var resultclass = submission.Result == "Accepted" ? "ac" : "notac";
+                <tr>
+                    <td>@submission.Id</td>
+                    <td>@submission.ApplicationUser.UserName</td>
+                    <td>@Html.ActionLink(submission.Problem.Name, "ViewProblem", "ContestProblems", new { submission.ContestId, ProblemId = submission.Problem.Id }, null)</td>
+                    <td class="@resultclass">@submission.Result</td>
+                    <td>@submission.Memory</td>
+                    <td>@submission.Time</td>
+                    <td>@submission.Language.Name</td>
+                    <td>@submission.SubmissionTime</td>
+                    <td>@Html.ActionLink("View Code", "SubmissionDetails", "ContestSubmissions", new { id = submission.Id, contestId = submission.ContestId }, null)</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

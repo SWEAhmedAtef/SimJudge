@@ -1,0 +1,34 @@
+﻿@model Test.Models.ContestSubmission
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<table id="Submissions" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Sumbission Id</th>
+            <th>User Name</th>
+            <th>Problem Name</th>
+            <th>Result</th>
+            <th>Memory</th>
+            <th>Time</th>
+            <th>Language</th>
+            <th>Submission Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{var resultclass = Model.Result == "Accepted" ? "ac" : "notac"; }
+        <tr>
+            <td>@Model.Id</td>
+            <td>@Model.ApplicationUser.UserName</td>
+            <td>@Html.ActionLink(Model.Problem.Name, "ViewProblem", "ContestProblems", new { Model.ContestId, ProblemId = Model.Problem.Id}, null)</td>
+            <td class="@resultclass">@Model.Result</td>
+            <td>@Model.Memory</td>
+            <td>@Model.Time</td>
+            <td>@Model.Language.Name</td>
+            <td>@Model.SubmissionTime</td>
+        </tr>
+    </tbody>
+</table>
+<pre>@Server.HtmlDecode(Model.Code)</pre>

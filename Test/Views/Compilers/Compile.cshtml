@@ -1,0 +1,27 @@
+﻿@model Test.ViewModels.CompilerViewModel
+@{
+    ViewBag.Title = "Compiler";
+}
+
+<h2>Compiler Output</h2>
+<div class="col-md-12">
+    @Html.TextAreaFor(m => m.Result, 5, 50, new { @class = "form-control", @readonly = "readonly" })
+</div>
+
+<h2>Test Your Code</h2>
+@using (Html.BeginForm("CompileAsync", "Compilers", new { @class = "form-horizontal", role = "form" }))
+{
+    <div class="form-group">
+        <div class="col-md-12">
+            @Html.TextAreaFor(m => m.Code, 16, 50, new { })
+        </div>
+        @Html.ValidationMessageFor(m => m.Code)
+    </div>
+
+   
+    <button class="btn btn-primary" type="submit">Run</button>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

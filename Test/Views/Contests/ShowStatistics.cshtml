@@ -1,0 +1,44 @@
+﻿@model Test.ViewModels.ContestUserStatisticsViewModel
+@{
+    ViewBag.Title = "ShowStatistics";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Contest Statistics</h2>
+
+<table id="table" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Solved Problems</th>
+            <th>Penalty</th>
+            @foreach (var problem in Model.ContestProblems)
+            {
+                <th>@Html.ActionLink(problem.ProblemIndex, "ViewProblem", "ContestProblems", new { problem.ContestId, ProblemId = problem.Problem.Id }, null)</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.ContestUsers)
+        {
+            <tr>
+                <td>@user.ApplicationUser.UserName</td>
+                <td>@user.SolvedProblems</td>
+                <td>@user.Penalty</td>
+                @foreach (var userproblem in Model.ContestUserStatistics.Where(c => c.ApplicationUserId == user.ApplicationUserId))
+                {
+                    var resultclass = userproblem.ProblemStatus == "Accepted" ? "ac" : "notac";
+                    <td class="@resultclass">@userproblem.ProblemStatus</td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable();
+        });
+    </script>
+}

@@ -1,0 +1,86 @@
+﻿@model Test.ViewModels.TutorialViewModel
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+
+    <div class="col-md-8">
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title">@Model.Tutorial.Title</h2>
+                <p class="card-text">@Model.Tutorial.TutorialDetails.Description</p>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.Tutorial.TutorialDetails.VideoUrl))
+            {
+                <iframe width="560" height="315" src="@Model.Tutorial.TutorialDetails.VideoUrl" title="Video" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                </iframe>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.Tutorial.TutorialDetails.Tags))
+            {
+                <h5 class="card-header">Tags</h5>
+                <div class="col-lg-6">
+                    <a href="https://en.wikipedia.org/wiki/Problem_solving">@Model.Tutorial.TutorialDetails.Tags</a>
+                </div>
+            }
+            @if (Model.Tutorial.TutorialDetails.RelatedProblemId != null)
+            {
+                <h5 class="card-header">Related Problem</h5>
+                @Html.ActionLink(Model.Tutorial.TutorialDetails.RelatedProblem.Name, "Problem", "Problems", new { Id = Model.Tutorial.TutorialDetails.RelatedProblemId }, null)
+            }
+
+            <div class="card-footer text-muted">
+                Posted on @Model.Tutorial.CreatedAt by
+                <a href="#">@Model.Tutorial.ApplicationUser.UserName</a>
+            </div>
+        </div>
+        @if (Request.IsAuthenticated)
+        {
+            using (Html.BeginForm("AddComment", "Tutorials", new { @class = "form-horizontal", role = "form" }, FormMethod.Post))
+            {
+                <div class="form-group">
+                    @Html.LabelFor(m => m.TutorialComment.Comment)
+                    @Html.TextBoxFor(m => m.TutorialComment.Comment, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.TutorialComment.Comment)
+                </div>
+
+                @Html.HiddenFor(m => m.TutorialComment.ApplicationUserId)
+                @Html.HiddenFor(m => m.TutorialComment.TutorialId)
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-primary">Add Comment</button>
+            }
+        }
+        <br />
+        <div>
+            <h2 class="my-4">Comments</h2>
+            @if (!Model.TutorialComments.Any())
+            {
+                <p>No comments available on this Educational Tutorial</p>
+            }
+            else
+            {
+                foreach (var tutorialComment in Model.TutorialComments)
+                {
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">@tutorialComment.ApplicationUser.NickName</h3>
+                        </div>
+                        <div class="panel-body">
+                            @tutorialComment.Comment
+                        </div>
+                        <div class="panel-footer">
+                            @tutorialComment.CreatedAt
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+    </div>
+
+</div>

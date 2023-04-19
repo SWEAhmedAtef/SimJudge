@@ -1,0 +1,134 @@
+﻿@model Test.ViewModels.ContestProblemsViewModel
+@{
+    ViewBag.Title = "ContestProblems";
+}
+
+@Html.ActionLink("View Submissions", "ViewSubmissions", "ContestSubmissions", new { id = Model.ContestId }, new { @class = "btn btn-primary" })
+@if (this.User.IsInRole("IsAdmin"))
+{
+    @Html.ActionLink("Add Problem", "AddProblem", "ContestProblems", new { id = Model.ContestId }, new { @class = "btn btn-primary" })
+}
+
+@Html.ActionLink("Standings", "ShowStatistics", "Contests", new { id = Model.ContestId }, new { @class = "btn btn-primary" })
+@if (!Model.IsEnrolled)
+{
+    @Html.ActionLink("Enroll", "Enroll", "Contests", new { id = Model.ContestId }, new { @class = "btn btn-primary" })
+}
+
+<h2>Contest Problems</h2>
+
+<div class="jumbotron">
+    <div>
+        <div>
+            <b>Begin:</b>
+            <span>@Model.Contest.StartDate</span>
+        </div>
+        <div>
+            <b>End:</b>
+            <span>@Model.Contest.EndDate</span>
+        </div>
+        <div style="padding-left:30%">
+            <h3 id="name" hidden>
+
+                Contest Name :  @Model.Contest.Name
+            </h3>
+        </div>
+
+    </div>
+    <div style="padding-left:30%">
+        <h3>
+            <span id="info" style="color: green;"></span>
+        </h3>
+    </div>
+    <div style="padding-left:35%">
+        <h4 id="count"></h4>
+    </div>
+
+    <div class="progress progress-striped active" style="background-color:white">
+        <div id="progress" class="progress-bar"></div>
+    </div>
+
+</div>
+
+<table id="Contests" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Problem Index</th>
+            <th>Problem Name</th>
+            <th>Problem NickName</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.ContestProblems.Any())
+        {
+            <tr>
+                <td colspan="3" style="text-align:center">Contest Has No Problems</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var problem in Model.ContestProblems)
+            {
+                <tr>
+                    <td>@problem.ProblemIndex</td>
+                    <td>@Html.ActionLink(problem.Problem.Name, "ViewProblem", "ContestProblems", new { problem.ContestId, ProblemId = problem.Problem.Id }, null)</td>
+                    <td>@problem.ProblemNickName</td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+
+<script>
+    const text = document.getElementById('count');
+    var id = setInterval(countDown, 1000);
+    function countDown() {
+        var end = new Date('@(Model.Contest.EndDate)').getTime();
+        var date = new Date().getTime();
+        var time = end - date;
+        var days = Math.floor(time / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((time % (1000 * 60)) / 1000);
+        if (date > end) {
+            clearInterval(id);
+            document.getElementById('info').innerHTML = "Contest " + '@(Model.Contest.Name)'  + " is Finished";
+            document.getElementById('name').hidden = true;
+            text.hidden = true;
+        }
+        else {
+            text.innerHTML = days + ":" + hours + ":"
+                + minutes + ":" + seconds;
+            document.getElementById('name').hidden = false;
+        }
+    }
+
+</script>
+
+@section scripts{
+    <script>
+    var startdate = new Date('@(Model.Contest.EndDate)').getTime()/1000;
+    var enddate = new Date('@(Model.Contest.StartDate)').getTime()/1000;
+    var totalseconds = startdate - enddate;
+    var currenttime = new Date().getTime()/1000;
+    var remaining = startdate - currenttime;
+
+    $(document).ready(function () {
+
+        var interval = setInterval(function () {
+            var currenttime = new Date().getTime() / 1000;
+            var elapsed = currenttime - enddate;
+            var size = elapsed / totalseconds;
+            console.log(size*100);
+            $("#progress").css('width', size*100 + '%');
+
+            if (elapsed >= totalseconds) {
+                clearInterval();
+            }
+
+        },1000)
+    })
+    </script>
+}

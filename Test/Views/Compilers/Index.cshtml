@@ -1,0 +1,19 @@
+﻿@model Test.ViewModels.CompilerViewModel
+@{
+    ViewBag.Title = "Compiler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Test Your Code</h2>
+
+@using (Html.BeginForm("CompileAsync", "Compilers"))
+{
+    <div class="form-group">
+        @Html.ValidationMessageFor(m => m.Code)
+        <div class="col-md-12">
+            @Html.TextAreaFor(m => m.Code, 20, 50, new { })
+        </div>
+    </div>
+   
+    <button class="btn btn-primary" type="submit">Run</button>
+}

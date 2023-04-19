@@ -1,0 +1,8 @@
+﻿@if (Html.Action("GetDarkMode", "Layout").ToString() == "True")
+{
+    @Html.ActionLink(" ", "ChangeDarkMode", "Layout", new { url = @Request.Url.PathAndQuery }, new { @class = "fa fa-sun-o" })
+}
+else
+{
+    @Html.ActionLink(" ", "ChangeDarkMode", "Layout", new { url = @Request.Url.PathAndQuery }, new { @class = "fa fa-moon-o" })
+}

@@ -1,0 +1,68 @@
+﻿@model Test.ViewModels.BlogViewModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <!-- Blog Entries Column -->
+    <div class="col-md-8">
+
+        <!-- Blog Post -->
+        <div class="card mb-4">
+            @if (Model.Blog.BlogDetails.Image != null)
+            {
+                <img src="~/Content/BlogImages/@Model.Blog.BlogDetails.Image" class="card-img-top">
+            }
+            <div class="card-body">
+                <h2 class="card-title">@Model.Blog.Title</h2>
+                <p class="card-text">@Model.Blog.BlogDetails.Description</p>
+            </div>
+            <div class="card-footer text-muted">
+                Posted on @Model.Blog.CreatedAt by
+                <a href="#">@Model.Blog.ApplicationUser.UserName</a>
+            </div>
+            <a href="@Model.Blog.BlogDetails.Link">Wiki</a>
+        </div>
+        @using (Html.BeginForm("AddComment", "Blogs", new { @class = "form-horizontal", role = "form" }, FormMethod.Post))
+        {
+            <div class="form-group">
+                @Html.LabelFor(m => m.BlogComment.Comment)
+                @Html.TextBoxFor(m => m.BlogComment.Comment, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.BlogComment.Comment)
+            </div>
+
+            @Html.HiddenFor(m => m.BlogComment.ApplicationUserId)
+            @Html.HiddenFor(m => m.BlogComment.BlogId)
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-primary">Add Comment</button>
+        }
+        <br />
+        <div>
+            <h2 class="my-4">Comments</h2>
+            @if (!Model.BlogComments.Any())
+            {
+                <p>No comments available on this blog</p>
+            }
+            else
+            {
+                foreach (var blogComment in Model.BlogComments)
+                {
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">@blogComment.ApplicationUser.NickName</h3>
+                        </div>
+                        <div class="panel-body">
+                            @blogComment.Comment
+                        </div>
+                        <div class="panel-footer">
+                            @blogComment.CreatedAt
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+</div>

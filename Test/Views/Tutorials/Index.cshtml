@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Test.Models.Tutorial>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+
+    <!-- Tutorial Entries Column -->
+    <div class="col-md-8">
+
+        <h2 class="my-4">Tutorials</h2>
+
+        @foreach (var tutorial in Model)
+        {
+            <!-- Tutorial Post -->
+            <div class="panel panel-primary">
+                <div class="panel-heading" style="height: 65px">
+                    <h3>@tutorial.Title</h3>
+                </div>
+                <div class="panel-body" Style="background-color: #E7E9EB">
+                    @Html.ActionLink("Read More >", "Details", "Tutorials", new { Id = tutorial.TutorialDetailsId }, new { @class = "" })
+                    <br />
+                    Posted on @tutorial.CreatedAt by
+                    <br />
+                    <a href="#">@tutorial.ApplicationUser.UserName</a>
+                    <br />
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card my-4">
+            <h5 class="card-header">Categories</h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <ul class="list-unstyled mb-0">
+                            <li>
+                                <a href="https://en.wikipedia.org/wiki/Problem_solving">ProblemSolving</a>
+                            </li>
+                            <li>
+                                <a href="https://en.wikipedia.org/wiki/Algorithm">Algorithm</a>
+                            </li>
+                            <li>
+                                <a href="https://en.wikipedia.org/wiki/Data_structure">Data Structure</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-6">
+                        <ul class="list-unstyled mb-0">
+                            <li>
+                                <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">OOP</a>
+                            </li>
+                            <li>
+                                <a href="https://en.wikipedia.org/wiki/Artificial_intelligence">Ai</a>
+                            </li>
+                            <li>
+                                <a href="https://en.wikipedia.org/wiki/Database">Database</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

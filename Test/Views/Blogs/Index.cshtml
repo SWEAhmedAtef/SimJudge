@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Test.Models.Blog>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@Html.ActionLink("Write New Blog", "New", "Blogs", null, new { @class = "btn btn-primary btn-lg" })
+
+<div class="row">
+    <!-- Blog Entries Column -->
+    <div class="col-md-8">
+
+        <h2 class="my-4">Blogs</h2>
+
+        @foreach (var blog in Model)
+        {
+            <!-- Blog Post -->
+            <div class="panel panel-primary">
+
+                <div class="panel-heading" style="height: 65px">
+                    <h3>@blog.Title</h3>
+                </div>
+
+                <div class="panel-body">
+                    @Html.ActionLink("Read More >", "Details", "Blogs", new { Id = blog.BlogDetailsId }, new { @class = "" })
+                    <br />
+                    @if (blog.BlogDetails.Image != null)
+                    {
+                        <img src="~/Content/img/@blog.BlogDetails.Image" class="card-img-top img-thumbnail">
+                        <br />
+                    }
+
+                    Posted on @blog.CreatedAt by
+                    <br />
+                    <a href="#">@blog.ApplicationUser.UserName</a>
+                    <br />
+                    <a href=@blog.BlogDetails.Link>Wiki</a>
+                </div>
+
+            </div>
+        }
+
+        <!-- Pagination -->
+        <ul class="pager">
+            <li class="previous disabled"><a class="page-link" href="#">&larr; Older</a></li>
+            <li class="next"><a class="page-link" href="#">Newer &rarr;</a></li>
+        </ul>
+
+    </div>
+
+</div>

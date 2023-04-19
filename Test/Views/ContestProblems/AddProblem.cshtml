@@ -1,0 +1,94 @@
+﻿@model Test.Models.Contest
+@{
+    ViewBag.Title = "New Contest";
+}
+
+<h4>Add Problem In Contest</h4>
+
+<form id="NewContest">
+
+    <div class="tt-container">
+        <label>Contest Name</label>
+        <div class="tt-container">
+            <h3> @Model.Name</h3>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Problems</label>
+        <div class="tt-container">
+            <input id="problem" name="problem" data-rule-atLeastOneProblem="true" type="text" value="" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 col-sm-4">
+            <ul id="problems" class="list-group"></ul>
+        </div>
+    </div>
+
+    <button class="btn btn-primary">Submit</button>
+</form>
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            var vm = {
+                problemIds: []
+            };
+            vm.contestId = @Model.Id;
+
+            var problems = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '/api/problems?query=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+
+            $('#problem').typeahead({
+                minLength: 2,
+                highlight: true,
+            }, {
+                name: 'problems',
+                limit: 10,
+                display: 'name',
+                source: problems
+            }).on("typeahead:select", function (e, problem) {
+                $("#problems").append("<li class='list-group-item'>" + problem.name + "</li>");
+                $("#problem").typeahead("val", "");
+                vm.problemIds.push(problem.id);
+            });
+
+            $.validator.addMethod("atLeastOneProblem", function () {
+                return vm.problemIds.length > 0;
+            }, "Please select at least one Problem.");
+
+            var validator = $("#NewContest").validate({
+                submitHandler: function () {
+                    $.ajax({
+                        url: "/api/contestProblems",
+                        method: "post",
+                        data: vm,
+                    })
+                        .done(function () {
+                            $("#problem").typeahead("val", "");
+                            $("#problems").empty();
+                            vm = {
+                                problemIds: []
+                            };
+                            validator.resetForm();
+                            location.href = "/Contests/" + @Model.Id;
+                        })
+                        .fail(function () {
+                            toastr.error("Something unexpected happend.")
+                        })
+                    return false;
+                }
+            });
+        });
+    </script>
+}

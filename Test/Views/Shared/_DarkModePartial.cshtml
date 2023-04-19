@@ -1,0 +1,16 @@
+﻿@if (Request.IsAuthenticated)
+{
+
+    if (Html.Action("GetDarkMode", "Layout").ToString() == "True")
+    {
+        @Styles.Render("~/Content/css-dark")
+    }
+    else
+    {
+        @Styles.Render("~/Content/css-light")
+    }
+}
+else
+{
+    @Styles.Render("~/Content/css-light")
+}

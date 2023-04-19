@@ -1,0 +1,79 @@
+﻿@model Test.ViewModels.ProblemViewModel
+@{
+    ViewBag.Title = "Problem";
+}
+
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$$$', '$$$'], ['\\(', '\\)']]
+        }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<h2>@Model.Problem.Name</h2>
+<h4 style="flex-direction: row">Problem Id: @Model.Problem.SourceWebsite.Name-@Model.Problem.SourceProblemId</h4>
+
+<div style="display: flex;">
+
+    <div class="jumbotron " style="padding: 10px; margin: 20px;width:80%">
+        <div style="margin: 15px;">
+            <h2 style="text-align: center">Description</h2>
+            <div class="jumbotron" style="padding: 5px;">
+                @Model.Problem.ProblemDetails.Description
+            </div>
+        </div>
+
+        <div style="margin: 15px;">
+            <h2 style="text-align: center">Input</h2>
+            <div class="jumbotron" style="padding: 5px;">
+                @Model.Problem.ProblemDetails.Input
+            </div>
+        </div>
+
+        <div style="margin: 15px;">
+            <h2 style="text-align: center">Output</h2>
+            <div class="jumbotron" style="padding: 5px;">
+                @Model.Problem.ProblemDetails.Output
+            </div>
+        </div>
+
+        <div style="margin: 15px;">
+            <h2 style="text-align: center">Examples</h2>
+            <p>Input:</p>
+            <div class="jumbotron" style="padding: 5px;">
+                @Model.Problem.SimJudgeDetails.TestCaseInput
+            </div>
+            <p>Output:</p>
+            <div class="jumbotron" style="padding: 5px;">
+                @Model.Problem.SimJudgeDetails.TestCaseOutput
+            </div>
+        </div>
+
+        <div style="margin: 15px;">
+            <h2 style="text-align: center">Notes</h2>
+            <div class="jumbotron" style="padding: 5px;">
+                @Model.Problem.ProblemDetails.Notes
+            </div>
+        </div>
+    </div>
+
+    <div style="padding: 5px;margin: 20px">
+
+        <div style="margin: 15px;">
+
+            <div class="jumbotron" style="padding: 5px;">
+                <h5 style="text-align: center">Time Limit:</h5>
+                <p style="text-align: center"> @Model.Problem.ProblemDetails.TimeLimit</p>
+            </div>
+
+            <div class="jumbotron" style="padding: 5px;">
+                <h5 style="text-align: center">Memory Limit:</h5>
+                <p style="text-align: center"> @Model.Problem.ProblemDetails.MemoryLimit</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+@Html.ActionLink("Submit", "Submit", "ContestSubmissions", new { Model.Problem.Id, Model.ContestId }, new { @class = "btn btn-success" })

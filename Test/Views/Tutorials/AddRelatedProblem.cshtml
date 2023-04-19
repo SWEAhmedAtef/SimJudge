@@ -1,0 +1,66 @@
+﻿@model Test.Models.Tutorial
+@{
+    ViewBag.Title = "AddRelatedProblem";
+}
+
+<h4>Add Related Problem</h4>
+
+<form id="TutorialRelatedProblem">
+    <div class="form-group">
+        <label>Related Problem</label>
+        <div class="tt-container">
+            <input id="relatedproblem" name="relatedproblem" type="text" value="" class="form-control" />
+        </div>
+    </div>
+
+    <button class="btn btn-primary">Submit</button>
+</form>
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            var vm = {};
+            vm.tutorialId = @Model.Id;
+            var problems = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '/api/problems?query=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+
+            $('#relatedproblem').typeahead({
+                minLength: 2,
+                highlight: true,
+            }, {
+                name: 'problems',
+                limit: 10,
+                display: 'name',
+                source: problems
+            }).on("typeahead:select", function (e, problem) {
+                $("#relatedproblem").typeahead("val", problem.name);
+                vm.problemId = problem.id;
+            });
+
+            var validator = $("#TutorialRelatedProblem").validate({
+                submitHandler: function () {
+                    $.ajax({
+                        url: "/api/relatedProblem",
+                        method: "post",
+                        data: vm,
+                    }).done(function () {
+                        $("#relatedproblem").typeahead("val", "");
+                        validator.resetForm();
+                        location.href = "/Tutorials"
+                    }).fail(function () {
+                        toastr.error("Something unexpected happend.")
+                    })
+                    return false;
+                }
+            });
+        });
+    </script>
+}
