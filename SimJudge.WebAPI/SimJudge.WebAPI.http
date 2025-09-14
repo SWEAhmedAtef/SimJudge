@@ -1,0 +1,6 @@
+@SimJudge.WebAPI_HostAddress = http://localhost:5033
+
+GET {{SimJudge.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
