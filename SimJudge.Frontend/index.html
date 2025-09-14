@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimJudge - Online Judge System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 0;
+        }
+        .feature-card {
+            transition: transform 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .problem-card {
+            border-left: 4px solid #007bff;
+        }
+        .contest-card {
+            border-left: 4px solid #28a745;
+        }
+        .submission-card {
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-code"></i> SimJudge
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#problems">Problems</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contests">Contests</a>
+                    </li>
+                    <li class="nav-link">
+                        <a class="nav-link" href="#submissions">Submissions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#login">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 mb-4">Welcome to SimJudge</h1>
+            <p class="lead mb-4">An online judge system for competitive programming</p>
+            <button class="btn btn-light btn-lg" onclick="loadProblems()">Get Started</button>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container mt-5">
+        <!-- Problems Section -->
+        <section id="problems" class="mb-5">
+            <h2 class="mb-4">
+                <i class="fas fa-puzzle-piece"></i> Problems
+                <button class="btn btn-primary btn-sm float-end" onclick="loadProblems()">
+                    <i class="fas fa-refresh"></i> Refresh
+                </button>
+            </h2>
+            <div id="problems-container" class="row">
+                <div class="col-12 text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contests Section -->
+        <section id="contests" class="mb-5">
+            <h2 class="mb-4">
+                <i class="fas fa-trophy"></i> Contests
+                <button class="btn btn-success btn-sm float-end" onclick="loadContests()">
+                    <i class="fas fa-refresh"></i> Refresh
+                </button>
+            </h2>
+            <div id="contests-container" class="row">
+                <div class="col-12 text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Submissions Section -->
+        <section id="submissions" class="mb-5">
+            <h2 class="mb-4">
+                <i class="fas fa-file-code"></i> Recent Submissions
+                <button class="btn btn-warning btn-sm float-end" onclick="loadSubmissions()">
+                    <i class="fas fa-refresh"></i> Refresh
+                </button>
+            </h2>
+            <div id="submissions-container" class="row">
+                <div class="col-12 text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2024 SimJudge. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_BASE_URL = 'https://localhost:7000/api';
+
+        // Load problems
+        async function loadProblems() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/problems`);
+                const problems = await response.json();
+                displayProblems(problems);
+            } catch (error) {
+                console.error('Error loading problems:', error);
+                document.getElementById('problems-container').innerHTML = 
+                    '<div class="col-12"><div class="alert alert-danger">Error loading problems</div></div>';
+            }
+        }
+
+        // Display problems
+        function displayProblems(problems) {
+            const container = document.getElementById('problems-container');
+            if (problems.length === 0) {
+                container.innerHTML = '<div class="col-12"><div class="alert alert-info">No problems found</div></div>';
+                return;
+            }
+
+            container.innerHTML = problems.map(problem => `
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card problem-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">${problem.name}</h5>
+                            <p class="card-text">
+                                <small class="text-muted">Source: ${problem.sourceWebsiteName}</small><br>
+                                <small class="text-muted">ID: ${problem.sourceProblemId}</small>
+                            </p>
+                            <button class="btn btn-outline-primary btn-sm" onclick="viewProblem(${problem.id})">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load contests
+        async function loadContests() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/contests`);
+                const contests = await response.json();
+                displayContests(contests);
+            } catch (error) {
+                console.error('Error loading contests:', error);
+                document.getElementById('contests-container').innerHTML = 
+                    '<div class="col-12"><div class="alert alert-danger">Error loading contests</div></div>';
+            }
+        }
+
+        // Display contests
+        function displayContests(contests) {
+            const container = document.getElementById('contests-container');
+            if (contests.length === 0) {
+                container.innerHTML = '<div class="col-12"><div class="alert alert-info">No contests found</div></div>';
+                return;
+            }
+
+            container.innerHTML = contests.map(contest => `
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card contest-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">${contest.name}</h5>
+                            <p class="card-text">
+                                <small class="text-muted">Start: ${new Date(contest.startDate).toLocaleDateString()}</small><br>
+                                <small class="text-muted">End: ${new Date(contest.endDate).toLocaleDateString()}</small><br>
+                                <small class="text-muted">Creator: ${contest.creatorName}</small>
+                            </p>
+                            <button class="btn btn-outline-success btn-sm" onclick="viewContest(${contest.id})">
+                                View Contest
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load submissions
+        async function loadSubmissions() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/submissions`);
+                const submissions = await response.json();
+                displaySubmissions(submissions);
+            } catch (error) {
+                console.error('Error loading submissions:', error);
+                document.getElementById('submissions-container').innerHTML = 
+                    '<div class="col-12"><div class="alert alert-danger">Error loading submissions</div></div>';
+            }
+        }
+
+        // Display submissions
+        function displaySubmissions(submissions) {
+            const container = document.getElementById('submissions-container');
+            if (submissions.length === 0) {
+                container.innerHTML = '<div class="col-12"><div class="alert alert-info">No submissions found</div></div>';
+                return;
+            }
+
+            container.innerHTML = submissions.map(submission => `
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card submission-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">${submission.problemName}</h5>
+                            <p class="card-text">
+                                <small class="text-muted">User: ${submission.userName}</small><br>
+                                <small class="text-muted">Language: ${submission.languageName}</small><br>
+                                <small class="text-muted">Result: <span class="badge bg-${getResultColor(submission.result)}">${submission.result}</span></small><br>
+                                <small class="text-muted">Time: ${submission.time}</small><br>
+                                <small class="text-muted">Memory: ${submission.memory}</small>
+                            </p>
+                            <button class="btn btn-outline-warning btn-sm" onclick="viewSubmission(${submission.id})">
+                                View Code
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get result color for badge
+        function getResultColor(result) {
+            switch (result.toLowerCase()) {
+                case 'accepted': return 'success';
+                case 'wrong answer': return 'danger';
+                case 'time limit exceeded': return 'warning';
+                case 'memory limit exceeded': return 'info';
+                case 'runtime error': return 'secondary';
+                default: return 'primary';
+            }
+        }
+
+        // View functions (placeholder)
+        function viewProblem(id) {
+            alert(`View problem ${id} - Feature coming soon!`);
+        }
+
+        function viewContest(id) {
+            alert(`View contest ${id} - Feature coming soon!`);
+        }
+
+        function viewSubmission(id) {
+            alert(`View submission ${id} - Feature coming soon!`);
+        }
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProblems();
+            loadContests();
+            loadSubmissions();
+        });
+    </script>
+</body>
+</html>
